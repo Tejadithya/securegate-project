@@ -48,16 +48,6 @@
 - Created troubleshooting guide
 
 ---
-
-## Future Enhancements (Pending)
-- Add user registration endpoint
-- Implement refresh tokens
-- Add password hashing (bcrypt)
-- Create frontend integration
-- Add audit logging
-- Implement rate limiting
-- Add webhook support for role changes
-
 ---
 
 ## Setup
