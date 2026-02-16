@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SecureGate | Admin Dashboard</title>
+
+    <link 
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" 
+        rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .navbar-brand {
+            font-weight: bold;
+            font-size: 1.5rem;
+        }
+        .sidebar {
+            background-color: #2c3e50;
+            color: white;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .sidebar a {
+            color: white;
+            text-decoration: none;
+            display: block;
+            padding: 10px 0;
+            border-bottom: 1px solid #34495e;
+        }
+        .sidebar a:hover {
+            background-color: #34495e;
+            padding-left: 10px;
+        }
+    </style>
+</head>
+
+<body class="bg-light">
+
+<!-- Navigation Bar -->
+<nav class="navbar navbar-dark bg-dark">
+    <div class="container-fluid">
+        <span class="navbar-brand">SecureGate RBAC</span>
+        <div>
+            <span id="userDisplay" class="text-white me-3"></span>
+            <button class="btn btn-outline-light btn-sm" onclick="logout()">Logout</button>
+        </div>
+    </div>
+</nav>
+
+<div class="container-fluid mt-4">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-md-3">
+            <div class="sidebar">
+                <h5 class="mb-4">Menu</h5>
+                <a href="#" onclick="showSection('overview')">Dashboard</a>
+                <a href="#" onclick="showSection('users')">Users</a>
+                <a href="#" onclick="showSection('roles')">Roles</a>
+                <a href="#" onclick="showSection('audit')">Audit Log</a>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-md-9">
+            <div class="p-4">
+                
+                <!-- Overview Section -->
+                <div id="overview" class="section">
+                    <h3>Welcome to Dashboard</h3>
+                    <p class="text-muted">Manage your RBAC system</p>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-4">
+                            <div class="card p-3 text-center">
+                                <h5>Total Users</h5>
+                                <h3 id="totalUsers">0</h3>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card p-3 text-center">
+                                <h5>Total Roles</h5>
+                                <h3 id="totalRoles">0</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Users Section -->
+                <div id="users" class="section" style="display: none;">
+                    <h3>Manage Users</h3>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Username</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTable">
+                            <tr><td colspan="3" class="text-center text-muted">No users</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Roles Section -->
+                <div id="roles" class="section" style="display: none;">
+                    <h3>Manage Roles</h3>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Role Name</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rolesTable">
+                            <tr><td colspan="3" class="text-center text-muted">No roles</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Audit Log Section -->
+                <div id="audit" class="section" style="display: none;">
+                    <h3>Audit Log</h3>
+                    <p class="text-muted">No audit logs available</p>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    const API_BASE_URL = 'http://localhost:8000';
+
+    // Check if user is logged in
+    function checkAuth() {
+        const token = localStorage.getItem('token');
+        const username = localStorage.getItem('username');
+
+        if (!token || !username) {
+            alert('Please login first');
+            window.location.href = 'index.html';
+            return false;
+        }
+
+        document.getElementById('userDisplay').textContent = `Welcome, ${username}!`;
+        return true;
+    }
+
+    // Show Section
+    function showSection(sectionId) {
+        document.querySelectorAll('.section').forEach(section => {
+            section.style.display = 'none';
+        });
+        document.getElementById(sectionId).style.display = 'block';
+    }
+
+    // Logout
+    function logout() {
+        localStorage.removeItem('token');
+        localStorage.removeItem('username');
+        window.location.href = 'index.html';
+    }
+
+    // Initialize
+    checkAuth();
+    showSection('overview');
+</script>
+
+</body>
+</html>
+
+            <h5 class="card-title mb-3">User Role Management</h5>
+
+            <table class="table table-striped table-hover align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Username</th>
+                        <th>Current Roles</th>
+                        <th>Assign Role</th>
+                    </tr>
+                </thead>
+                <tbody id="userTable">
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+
+    <div class="card shadow mt-4">
+        <div class="card-body">
+            <h5 class="card-title">Audit Logs</h5>
+            <ul class="list-group" id="auditLogList"></ul>
+        </div>
+    </div>
+
+</div>
+
+<script type="module" src="js/controllers/dashboardController.js"></script>
+
+</body>
+</html>
